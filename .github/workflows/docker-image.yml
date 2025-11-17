@@ -8,6 +8,7 @@ on:
       - 'Dockerfile'
       - 'package.json'
       - 'app.js'
+      - 'start.sh'
       
   pull_request:
     branches: [ main ]
