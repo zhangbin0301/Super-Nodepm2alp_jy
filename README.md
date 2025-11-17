@@ -17,4 +17,4 @@ VLPATH=startlovervl
 
 说明：OPENSERVER默认为1,使用argo。为0时直连,可用MY_DOMAIN为cf worker或page反代域名。OPENUSCF默认为0，为1时使用美区argo。V_PORT默认8080。默认vless协议。
 
-argo所需变量(V_PORT不用设,默认8080，NVERSION V0不用设)：UUID SNAME SURL NSERVER NKEY V_DOMAIN V_AUTH
+argo所需变量(V_PORT不用设,默认8080，NVERSION 默认V1)：UUID SNAME SURL NSERVER NKEY V_DOMAIN V_AUTH
