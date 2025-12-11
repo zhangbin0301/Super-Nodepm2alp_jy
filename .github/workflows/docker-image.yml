@@ -1,5 +1,5 @@
-name: Build and Push SuperNodejs Docker Image 
-#可以使用action生成自己的镜像
+name: Build and Push SuperNodejs Docker Image
+# 可以使用 action 生成自己的镜像
 
 on:
   push:
@@ -9,7 +9,6 @@ on:
       - 'package.json'
       - 'app.js'
       - 'start.sh'
-      
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -40,7 +39,8 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64,linux/arm64
+          # ✅ 先只构建 amd64，避免 QEMU 带来的 apk 问题
+          platforms: linux/amd64
           tags: |
             ghcr.io/${{ github.repository_owner }}/supernodepm2alp_jy:latest
           labels: |
