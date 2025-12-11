@@ -293,7 +293,7 @@ run_processes() {
 
   sleep 30
 
-  export ISP=$(curl -s https://ipconfig.netlib.re)   # 显示ISP及国家简称  export ISP=$(curl -s https://speed.cloudflare.com/meta | awk -F\" '{print $26"-"$18}' | sed -e 's/ /_/g') && sleep 1
+  export ISP=$(curl -s https://ipconfig.de5.net)   # 显示ISP及国家简称  export ISP=$(curl -s https://speed.cloudflare.com/meta | awk -F\" '{print $26"-"$18}' | sed -e 's/ /_/g') && sleep 1
   check_hostname_change && sleep 2
 
   if [ -n "$SURL" ]; then
