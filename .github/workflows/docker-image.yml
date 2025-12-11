@@ -1,51 +1,28 @@
-name: Build and Push SuperNodejs Docker Image
-# 可以使用 action 生成自己的镜像
+FROM node:18-slim
 
-on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'Dockerfile'
-      - 'package.json'
-      - 'app.js'
-      - 'start.sh'
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+WORKDIR /app
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+# 安装系统工具
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      bash wget curl procps && \
+    rm -rf /var/lib/apt/lists/*
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+# 使用国内 npm 源（可选）
+RUN npm config set registry https://registry.npmmirror.com
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+# 复制依赖文件
+COPY package*.json ./
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+# 安装依赖
+RUN npm install --production && \
+    npm install -g pm2
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          # ✅ 先只构建 amd64，避免 QEMU 带来的 apk 问题
-          platforms: linux/amd64
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/supernodepm2alp_jy:latest
-          labels: |
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.description=XHTTP Server
-            org.opencontainers.image.licenses=MIT
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+# 复制项目文件
+COPY app.js start.sh ./
+RUN chmod +x start.sh
+
+EXPOSE 3000
+ENV PM2_HOME=/tmp
+
+CMD ["pm2-runtime", "start", "start.sh"]
